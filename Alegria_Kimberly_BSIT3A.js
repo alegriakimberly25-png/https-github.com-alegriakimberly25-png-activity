@@ -1,201 +1,450 @@
-let studentName = "Kimberly";
-let studentAge = 21;
-let studentCourse = "Information Technology";
-let studentYear = 3;
-let studentCity = "Calbayog";
-let studentStatus = "Active";
-let studentScore = 92;
-let studentSection = "IT-3A";
-let studentHobby = "Programming";
-let studentEmail = "alegriakimberly@25gmail.com";
 
-const schoolName = "NWSSU";
-const schoolYear = "2026-2027";
-const passingScore = 75;
-const maxScore = 97;
-const department = "CCIS";
-const subject = "JavaScript Programming";
-const teacher = "Ms. Santos";
-const semester = "First Semester";
-const schoolLocation = "Calbayog, Philippines";
-const programTitle = "Student Management System";
+import React from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  StatusBar,
+} from 'react-native';
 
-const subjects = ["JavaScript", "Networking", "Database", "Mathematics"];
-const grades = [92, 88, 95, 90];
-const classmates = ["Dailyn", "JL", "Raven", "Jonuel"];
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-const [firstSubject, secondSubject] = subjects;
+const Stack = createNativeStackNavigator();
 
-const [firstGrade, secondGrade, thirdGrade] = grades;
+// Product data
+const products = [
+  {
+    id: '1',
+    name: 'Wireless Headphones',
+    price: 1499,
+    category: 'Electronics',
+    emoji: '🎧',
+    description:
+      'Enjoy your favorite music with comfortable wireless headphones, clear sound, and a modern design.',
+  },
+  {
+    id: '2',
+    name: 'Running Shoes',
+    price: 2199,
+    category: 'Fashion',
+    emoji: '👟',
+    description:
+      'Lightweight running shoes designed for comfort, daily walking, exercise, and outdoor activities.',
+  },
+  {
+    id: '3',
+    name: 'Smart Watch',
+    price: 1899,
+    category: 'Accessories',
+    emoji: '⌚',
+    description:
+      'A stylish smartwatch that complements your everyday look and helps you keep track of daily activities.',
+  },
+  {
+    id: '4',
+    name: 'Backpack',
+    price: 999,
+    category: 'Bags',
+    emoji: '🎒',
+    description:
+      'A practical backpack with plenty of room for school supplies, personal items, and everyday essentials.',
+  },
+];
 
-const [firstClassmate, secondClassmate] = classmates;
+// SCREEN 1: HOME
+function HomeScreen({ navigation }) {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.smallHeading}>WELCOME TO</Text>
+      <Text style={styles.heading}>ShopEasy 🛍️</Text>
 
-const student = {
-    name: studentName,
-    age: studentAge,
-    course: studentCourse,
-    year: studentYear,
-    city: studentCity,
-    contact: {
-        email: studentEmail,
-        phone: "09488428068"
-    }
-};
+      <Text style={styles.subtitle}>
+        Find your everyday essentials in one place.
+      </Text>
 
-const school = {
-    name: schoolName,
-    location: schoolLocation,
-    department: department,
-    teacher: teacher
-};
+      <View style={styles.heroCard}>
+        <Text style={styles.heroEmoji}>🛒</Text>
+        <Text style={styles.heroTitle}>
+          Discover Something New
+        </Text>
+        <Text style={styles.heroDescription}>
+          Browse our collection of useful products at affordable
+          sample prices.
+        </Text>
+      </View>
 
-const academic = {
-    subject: subject,
-    semester: semester,
-    schoolYear: schoolYear,
-    score: studentScore
-};
+      <TouchableOpacity
+        style={styles.primaryButton}
+        onPress={() => navigation.navigate('Catalog')}
+      >
+        <Text style={styles.primaryButtonText}>
+          Explore Products →
+        </Text>
+      </TouchableOpacity>
 
+      <Text style={styles.footer}>
+        Simple shopping, made easy.
+      </Text>
+    </View>
+  );
+}
 
-const { name: fullName, age: ageValue } = student;
+// SCREEN 2: PRODUCT CATALOG
+function CatalogScreen({ navigation }) {
+  const renderProduct = ({ item }) => (
+    <TouchableOpacity
+      style={styles.productCard}
+      onPress={() =>
+        navigation.navigate('Details', {
+          product: item,
+        })
+      }
+    >
+      <View style={styles.productImage}>
+        <Text style={styles.productEmoji}>{item.emoji}</Text>
+      </View>
 
-const { course, year } = student;
+      <View style={styles.productInfo}>
+        <Text style={styles.productName}>{item.name}</Text>
+        <Text style={styles.category}>{item.category}</Text>
+        <Text style={styles.price}>
+          ₱{item.price.toLocaleString('en-PH')}
+        </Text>
+      </View>
 
-const { teacher: teacherName, department: schoolDepartment } = school;
+      <Text style={styles.arrow}>›</Text>
+    </TouchableOpacity>
+  );
 
+  return (
+    <View style={styles.container}>
+      <Text style={styles.heading}>Our Products</Text>
+      <Text style={styles.subtitle}>
+        Select a product to view more information.
+      </Text>
 
-const greetStudent = (name) => {
-    return `Hello, ${name}! Welcome to ${schoolName}.`;
-};
+      <FlatList
+        data={products}
+        renderItem={renderProduct}
+        keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
+      />
 
-const calculateAverage = (scores) => {
-    let total = 0;
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
+        <Text style={styles.backButtonText}>
+          ← Back to Home
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
-    for (let score of scores) {
-        total += score;
-    }
+// SCREEN 3: PRODUCT DETAILS
+function DetailsScreen({ route, navigation }) {
+  // Receive product data from the Catalog screen
+  const { product } = route.params;
 
-    return total / scores.length;
-};
+  return (
+    <View style={styles.container}>
+      <View style={styles.detailsImage}>
+        <Text style={styles.detailsEmoji}>{product.emoji}</Text>
+      </View>
 
-const checkStatus = (score) => {
-    if (score >= passingScore) {
-        return "Passed";
-    } else {
-        return "Failed";
-    }
-};
+      <Text style={styles.detailsName}>{product.name}</Text>
 
-const getFullCourse = (course, year) => {
-    return `${course} - Year ${year}`;
-};
+      <Text style={styles.category}>{product.category}</Text>
 
-const displayStudent = (studentObject) => {
-    return `Student: ${studentObject.name}, Age: ${studentObject.age}`;
-};
+      <Text style={styles.detailsPrice}>
+        ₱{product.price.toLocaleString('en-PH')}
+      </Text>
 
-console.log(`===== ${programTitle} =====`);
-console.log(`School: ${schoolName}`);
-console.log(`School Year: ${schoolYear}`);
-console.log(`Student Name: ${fullName}`);
-console.log(`Student Age: ${ageValue}`);
-console.log(`Course: ${course}`);
-console.log(`Year Level: ${year}`);
-console.log(`First Subject: ${firstSubject}`);
-console.log(`Second Subject: ${secondSubject}`);
-console.log(`First Grade: ${firstGrade}`);
-console.log(`Second Grade: ${secondGrade}`);
-console.log(`Student City: ${studentCity}`);
-console.log(`Student Status: ${studentStatus}`);
-console.log(`Student Hobby: ${studentHobby}`);
-console.log(`Email Address: ${studentEmail}`);
+      <View style={styles.descriptionCard}>
+        <Text style={styles.sectionTitle}>Product Description</Text>
+        <Text style={styles.description}>
+          {product.description}
+        </Text>
+      </View>
 
-const additionalSubjects = ["SPI", "Physical Education"];
+      <TouchableOpacity
+        style={styles.primaryButton}
+        onPress={() => navigation.goBack()}
+      >
+        <Text style={styles.primaryButtonText}>
+          ← Back to Products
+        </Text>
+      </TouchableOpacity>
 
-const allSubjects = [...subjects, ...additionalSubjects];
+      <TouchableOpacity
+        style={styles.secondaryButton}
+        onPress={() => navigation.navigate('Home')}
+      >
+        <Text style={styles.secondaryButtonText}>
+          Return to Home
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
-const newGrades = [97, ...grades, 87];
+// MAIN APP
+export default function App() {
+  return (
+    <NavigationContainer>
+      <StatusBar barStyle="light-content" />
 
-const updatedStudent = {
-    ...student,
-    status: studentStatus,
-    hobby: studentHobby
-};
+      <Stack.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#245B43',
+          },
+          headerTintColor: '#FFFFFF',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          contentStyle: {
+            backgroundColor: '#F4F7F4',
+          },
+        }}
+      >
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ title: 'ShopEasy' }}
+        />
 
-const updatedSchool = {
-    ...school,
-    schoolYear: schoolYear,
-    program: programTitle
-};
+        <Stack.Screen
+          name="Catalog"
+          component={CatalogScreen}
+          options={{ title: 'Product Catalog' }}
+        />
 
-const uppercaseSubjects = subjects.map((subjectName) => {
-    return subjectName.toUpperCase();
+        <Stack.Screen
+          name="Details"
+          component={DetailsScreen}
+          options={{ title: 'Product Details' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+// STYLES
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F4F7F4',
+    padding: 22,
+  },
+
+  smallHeading: {
+    color: '#4D8968',
+    fontSize: 12,
+    fontWeight: 'bold',
+    letterSpacing: 2,
+    marginTop: 25,
+  },
+
+  heading: {
+    color: '#183C2D',
+    fontSize: 29,
+    fontWeight: 'bold',
+    marginTop: 8,
+  },
+
+  subtitle: {
+    color: '#77847D',
+    fontSize: 14,
+    lineHeight: 22,
+    marginTop: 8,
+    marginBottom: 22,
+  },
+
+  heroCard: {
+    backgroundColor: '#FFFFFF',
+    padding: 25,
+    borderRadius: 20,
+    alignItems: 'center',
+    marginVertical: 15,
+    elevation: 3,
+  },
+
+  heroEmoji: {
+    fontSize: 65,
+    marginBottom: 15,
+  },
+
+  heroTitle: {
+    color: '#183C2D',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+
+  heroDescription: {
+    color: '#77847D',
+    fontSize: 14,
+    lineHeight: 22,
+    textAlign: 'center',
+    marginTop: 10,
+  },
+
+  primaryButton: {
+    backgroundColor: '#245B43',
+    padding: 16,
+    borderRadius: 13,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+
+  primaryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+
+  footer: {
+    color: '#8A968F',
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 30,
+  },
+
+  listContent: {
+    paddingBottom: 15,
+  },
+
+  productCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 13,
+    marginBottom: 13,
+    elevation: 2,
+  },
+
+  productImage: {
+    width: 70,
+    height: 75,
+    borderRadius: 12,
+    backgroundColor: '#E5EFE7',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  productEmoji: {
+    fontSize: 37,
+  },
+
+  productInfo: {
+    flex: 1,
+    marginLeft: 14,
+  },
+
+  productName: {
+    color: '#183C2D',
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+
+  category: {
+    color: '#77847D',
+    fontSize: 13,
+    marginBottom: 7,
+  },
+
+  price: {
+    color: '#26704C',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+
+  arrow: {
+    color: '#245B43',
+    fontSize: 30,
+    marginLeft: 5,
+  },
+
+  backButton: {
+    borderColor: '#245B43',
+    borderWidth: 1,
+    padding: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 5,
+  },
+
+  backButtonText: {
+    color: '#245B43',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+
+  detailsImage: {
+    height: 180,
+    borderRadius: 20,
+    backgroundColor: '#E5EFE7',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 25,
+  },
+
+  detailsEmoji: {
+    fontSize: 85,
+  },
+
+  detailsName: {
+    color: '#183C2D',
+    fontSize: 27,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+
+  detailsPrice: {
+    color: '#26704C',
+    fontSize: 25,
+    fontWeight: 'bold',
+    marginTop: 5,
+  },
+
+  descriptionCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 18,
+    marginTop: 22,
+  },
+
+  sectionTitle: {
+    color: '#183C2D',
+    fontSize: 17,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+
+  description: {
+    color: '#66746B',
+    fontSize: 14,
+    lineHeight: 23,
+  },
+
+  secondaryButton: {
+    alignItems: 'center',
+    padding: 14,
+    marginTop: 5,
+  },
+
+  secondaryButtonText: {
+    color: '#245B43',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
 });
-
-const improvedGrades = grades.map((grade) => {
-    return grade + 5;
-});
-
-const passedGrades = grades.filter((grade) => {
-    return grade >= passingScore;
-});
-
-// Filter Array 2: Grades above 90
-const excellentGrades = grades.filter((grade) => {
-    return grade > 90;
-});
-
-const studentContactInfo = {
-    email: student.contact?.email || "No email available",
-    phone: student.contact?.phone || "No phone available"
-};
-
-// Optional Chaining Object 2
-const studentAddressInfo = {
-    city: student.address?.city || "City not provided",
-    country: student.address?.country || "Country not provided"
-};
-
-console.log(greetStudent(studentName));
-
-console.log(`Average Grade: ${calculateAverage(grades)}`);
-
-console.log(`Academic Status: ${checkStatus(studentScore)}`);
-
-console.log(`Course Information: ${getFullCourse(studentCourse, studentYear)}`);
-
-console.log(displayStudent(student));
-
-console.log("\n===== MAP RESULTS =====");
-console.log(`Uppercase Subjects: ${uppercaseSubjects}`);
-console.log(`Improved Grades: ${improvedGrades}`);
-
-console.log("\n===== FILTER RESULTS =====");
-console.log(`Passed Grades: ${passedGrades}`);
-console.log(`Excellent Grades: ${excellentGrades}`);
-
-console.log("\n===== SPREAD OPERATOR RESULTS =====");
-console.log(`All Subjects: ${allSubjects}`);
-console.log(`New Grades: ${newGrades}`);
-
-console.log("Updated Student:", updatedStudent);
-console.log("Updated School:", updatedSchool);
-
-console.log("\n===== OPTIONAL CHAINING RESULTS =====");
-console.log(`Email: ${studentContactInfo.email}`);
-console.log(`Phone: ${studentContactInfo.phone}`);
-console.log(`City: ${studentAddressInfo.city}`);
-console.log(`Country: ${studentAddressInfo.country}`);
-
-console.log("\n===== FINAL STUDENT REPORT =====");
-
-console.log(`Name: ${studentName}`);
-console.log(`Course: ${studentCourse}`);
-console.log(`Year Level: ${studentYear}`);
-console.log(`Average Grade: ${calculateAverage(grades)}`);
-console.log(`Status: ${checkStatus(studentScore)}`);
-console.log(`School: ${schoolName}`);
-console.log(`Teacher: ${teacher}`);
-console.log(`Department: ${department}`);
-
-console.log("\nThank you for using the Student Management System!");
